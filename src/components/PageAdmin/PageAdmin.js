@@ -74,7 +74,13 @@ class PageAdmin extends Component {
             >
               <Box direction="row" overflow={{ horizontal: 'scroll' }}>
                 {questionList.map(({ question, answers }, questionIndex) => (
-                  <Box className="question-element" key={question}>
+                  <Box
+                    className="question-element"
+                    key={question}
+                    width={{ min: '250px', max: 'large' }}
+                    margin="5px"
+                    border={{ size: 'small', color: 'dark-4' }}
+                  >
                     <Box width="medium">
                       <FormField label={`Question ${questionIndex + 1}`}>
                         <TextInput value={question} />
@@ -93,19 +99,30 @@ class PageAdmin extends Component {
 
                     {questionList[questionIndex].answers.length <
                       maxNumberAnswers && (
-                      <Box direction="row">
-                        <Box width="small">
-                          <FormField
-                            label="(disabled) Another Answer"
-                            disabled
-                          />
-                        </Box>
+                      <Box
+                        background="accent-4"
+                        align="center"
+                        justify="center"
+                      >
                         <Button
                           onClick={() => {
                             this.addAnswer({ questionIndex })
                           }}
                         >
-                          Add Answer
+                          <Box
+                            width="small"
+                            pad="medium"
+                            direction="column"
+                            justify="center"
+                            align="center"
+                            border={{ size: 'small', color: 'dark-3' }}
+                            margin="5px"
+                          >
+                            <Box margin={{ bottom: '10px' }}>
+                              <Add />
+                            </Box>
+                            <Text>Add Answer</Text>
+                          </Box>
                         </Button>
                       </Box>
                     )}
@@ -113,9 +130,27 @@ class PageAdmin extends Component {
                 ))}
 
                 {questionList.length < maxNumberQuestions && (
-                  <Box background="brand">
+                  <Box
+                    background="brand"
+                    align="center"
+                    justify="center"
+                    width={{ min: '250px', max: 'large' }}
+                  >
                     <Button onClick={this.addQuestion}>
-                      <Text>Add Question</Text>
+                      <Box
+                        width="small"
+                        pad="medium"
+                        direction="column"
+                        justify="center"
+                        align="center"
+                        border={{ size: 'small', color: 'dark-3' }}
+                        margin="5px"
+                      >
+                        <Box margin={{ bottom: '10px' }}>
+                          <Add />
+                        </Box>
+                        <Text>Add Question</Text>
+                      </Box>
                     </Button>
                   </Box>
                 )}
