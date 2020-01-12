@@ -3,6 +3,9 @@ import { Box, Text, Heading, Form, FormField, Button, TextInput } from 'grommet'
 import { ConfigStageDisplay } from '..'
 import { Add } from 'grommet-icons'
 
+const maxNumberQuestions = 8
+const maxNumberAnswers = 4
+
 class PageAdmin extends Component {
   constructor() {
     super()
@@ -88,26 +91,34 @@ class PageAdmin extends Component {
                       </Box>
                     ))}
 
-                    <Box direction="row">
-                      <Box width="small">
-                        <FormField label="(disabled) Another Answer" disabled />
+                    {questionList[questionIndex].answers.length <
+                      maxNumberAnswers && (
+                      <Box direction="row">
+                        <Box width="small">
+                          <FormField
+                            label="(disabled) Another Answer"
+                            disabled
+                          />
+                        </Box>
+                        <Button
+                          onClick={() => {
+                            this.addAnswer({ questionIndex })
+                          }}
+                        >
+                          Add Answer
+                        </Button>
                       </Box>
-                      <Button
-                        onClick={() => {
-                          this.addAnswer({ questionIndex })
-                        }}
-                      >
-                        Add Answer
-                      </Button>
-                    </Box>
+                    )}
                   </Box>
                 ))}
 
-                <Box background="brand">
-                  <Button onClick={this.addQuestion}>
-                    <Text>Add Question</Text>
-                  </Button>
-                </Box>
+                {questionList.length < maxNumberQuestions && (
+                  <Box background="brand">
+                    <Button onClick={this.addQuestion}>
+                      <Text>Add Question</Text>
+                    </Button>
+                  </Box>
+                )}
               </Box>
             </Form>
           </Box>
