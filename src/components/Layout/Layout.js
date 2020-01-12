@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, Header, Grid, Footer, Main } from 'grommet'
 import io from 'socket.io-client'
 
-const socket = io('http://localhost:5000')
+const socket = io('http://10.0.0.154:80')
 
 const Layout = () => {
   const [canVote, setCanVote] = useState(true)
