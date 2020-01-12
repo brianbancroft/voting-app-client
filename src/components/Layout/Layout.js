@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Header, Grid, Footer, Main, Text } from 'grommet'
+import { Header, Grid, Footer, Main, Text, Box } from 'grommet'
 import { Link } from 'react-router-dom'
 
 const Layout = ({ children }) => (
@@ -12,7 +12,7 @@ const Layout = ({ children }) => (
             <Text>Voting App</Text>
           </Link>
         </Header>
-        {children}
+        <Box overflow={{ vertical: 'scroll' }}>{children}</Box>
         <Footer background="brand">
           <Link to="/about">Learn More</Link>
         </Footer>

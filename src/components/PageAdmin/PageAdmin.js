@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Box, Text, Heading, Form, FormField, Button } from 'grommet'
+import { Box, Text, Heading, Form, FormField, Button, TextInput } from 'grommet'
 import { ConfigStageDisplay } from '..'
+import { Add } from 'grommet-icons'
 
 class PageAdmin extends Component {
   constructor() {
@@ -33,6 +34,25 @@ class PageAdmin extends Component {
     })
   }
 
+  addAnswer = ({ questionIndex }) => {
+    const { questionList } = this.state
+
+    questionList[questionIndex] = {
+      ...questionList[questionIndex],
+      answers: [...questionList[questionIndex].answers, ''],
+    }
+
+    this.setState({ questionList })
+  }
+
+  removeQuestion = ({ questionIndex }) => {}
+
+  removeAnswer = ({ questionIndex, answerIndex }) => {}
+
+  editQuestion = ({ questionIndex, event }) => {}
+
+  editAnswer = ({ questionIndex, answerIndex, event }) => {}
+
   render() {
     const { questionList } = this.state
 
@@ -50,14 +70,21 @@ class PageAdmin extends Component {
               }}
             >
               <Box direction="row" overflow={{ horizontal: 'scroll' }}>
-                {questionList.map(({ question, answers }) => (
-                  <Box className="question-element">
+                {questionList.map(({ question, answers }, questionIndex) => (
+                  <Box className="question-element" key={question}>
                     <Box width="medium">
-                      <FormField label={question} />
+                      <FormField label={`Question ${questionIndex + 1}`}>
+                        <TextInput value={question} />
+                      </FormField>
                     </Box>
-                    {answers.map(answer => (
-                      <Box width="small">
-                        <FormField label={answer} />
+                    {answers.map((answer, answerIndex) => (
+                      <Box
+                        width="small"
+                        key={`${answer}-${answerIndex}-${questionIndex}`}
+                      >
+                        <FormField label={`Answer ${answerIndex + 1}`}>
+                          <TextInput value={answer} />
+                        </FormField>
                       </Box>
                     ))}
 
@@ -67,7 +94,7 @@ class PageAdmin extends Component {
                       </Box>
                       <Button
                         onClick={() => {
-                          console.log('Add answer selected')
+                          this.addAnswer({ questionIndex })
                         }}
                       >
                         Add Answer

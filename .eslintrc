@@ -3,6 +3,7 @@
     "@sparkgeo/eslint-config-react"
   ],
   "rules": {
-    "jsx-quotes": 0
+    "jsx-quotes": 0,
+    "react/no-array-index-key": 0
   }
 }
