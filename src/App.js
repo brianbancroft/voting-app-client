@@ -8,7 +8,9 @@ import React from 'react'
 import { ThemeProvider } from 'styled-components'
 import { Grommet } from 'grommet'
 
-import { Layout } from './components'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+
+import { Layout, PageHome, PageAbout, PageAdmin } from './components'
 import theme from './theme'
 import './App.css'
 
@@ -16,7 +18,21 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Grommet theme={theme} full>
-        <Layout />
+        <Router>
+          <Layout>
+            <Switch>
+              <Route path="/admin">
+                <PageAdmin />
+              </Route>
+              <Route path="/about">
+                <PageAbout />
+              </Route>
+              <Route path="/">
+                <PageHome />
+              </Route>
+            </Switch>
+          </Layout>
+        </Router>
       </Grommet>
     </ThemeProvider>
   )
