@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
-import { Add, Trash } from 'grommet-icons'
+import { Add, Trash, Troubleshoot } from 'grommet-icons'
 import { ConfigStageDisplay, LoadingIcon } from '..'
-import { get } from 'axios'
+import { get, post } from 'axios'
 
 const maxNumberQuestions = 18
 const maxNumberAnswers = 4
@@ -28,13 +28,21 @@ class PageAdmin extends Component {
 
     const { data: questionList } = response
 
-    // this.setState({
-    //   loading: false,
-    //   questionList,
-    // })
+    this.setState({
+      loading: false,
+      questionList,
+    })
   }
 
-  setEditMode = editMode => this.setState({ editMode })
+  setEditMode = editMode => {
+    const url = 'http://localhost:4000/poll'
+    const { questionList } = this.state
+
+    this.setState({ editMode })
+    if (!editMode) {
+      post(url, questionList)
+    }
+  }
 
   addQuestion = () => {
     const { questionList } = this.state
@@ -95,173 +103,198 @@ class PageAdmin extends Component {
     document.title = 'Voting App - Admin Page'
     const { questionList, editMode, loading, error } = this.state
 
-    return loading ? (
-      <Box
-        direction="column"
-        justify="center"
-        align="center"
-        pad="large"
-        background="accent-2"
-        height="large"
-      >
-        <Box margin={{ bottom: '25px' }}>
-          <LoadingIcon />
-        </Box>
-        <Text size="24px" color="light-2">
-          Loading...
-        </Text>
-      </Box>
-    ) : (
+    return (
       <>
-        <Box direction="column">
-          <ConfigStageDisplay
-            setEditMode={this.setEditMode}
-            status={editMode}
-          />
-          <Box>
-            <Box direction="row" overflow={{ horizontal: 'scroll' }}>
-              {questionList.map(({ question, answers }, questionIndex) => (
-                <Box
-                  className="question-element"
-                  direction="column"
-                  key={questionIndex}
-                  width={{ min: '250px', max: 'large' }}
-                  margin="5px"
-                  border={{ size: 'small', color: 'dark-4' }}
-                >
-                  <Box width="medium">
-                    <FormField label={`Question ${questionIndex + 1}`}>
-                      <TextInput
-                        label="test"
-                        type="text"
-                        value={question}
-                        onChange={({ target: { value } }) =>
-                          this.editQuestion({ value, questionIndex })
-                        }
-                        disabled={!editMode}
-                      />
-                    </FormField>
-                  </Box>
-                  {answers.map((answer, answerIndex) => (
+        {loading && (
+          <Box
+            direction="column"
+            justify="center"
+            align="center"
+            pad="large"
+            background="accent-2"
+            height="large"
+          >
+            <Box margin={{ bottom: '25px' }}>
+              <LoadingIcon />
+            </Box>
+            <Text size="24px" color="light-2">
+              Loading...
+            </Text>
+          </Box>
+        )}
+        {error && (
+          <Box
+            direction="column"
+            justify="center"
+            align="center"
+            pad="large"
+            background="accent-2"
+            height="large"
+          >
+            <Box margin={{ bottom: '25px' }}>
+              <Troubleshoot size="large" color="light-2" />
+            </Box>
+            <Text size="24px" color="light-2">
+              Sorry, an error occured obtaining data from the backend...
+            </Text>
+          </Box>
+        )}
+        {!loading && !error && (
+          <>
+            <Box direction="column">
+              <ConfigStageDisplay
+                setEditMode={this.setEditMode}
+                status={editMode}
+              />
+              <Box>
+                <Box direction="row" overflow={{ horizontal: 'scroll' }}>
+                  {questionList.map(({ question, answers }, questionIndex) => (
                     <Box
-                      direction="row"
-                      border={{
-                        size: 'small',
-                        side: 'bottom',
-                        color: 'dark-3',
-                      }}
+                      className="question-element"
+                      direction="column"
+                      key={questionIndex}
+                      width={{ min: '250px', max: 'large' }}
+                      margin="5px"
+                      border={{ size: 'small', color: 'dark-4' }}
                     >
-                      <Box
-                        width="small"
-                        key={`${answerIndex}-${questionIndex}`}
-                      >
-                        <FormField label={`Answer ${answerIndex + 1}`}>
+                      <Box width="medium">
+                        <FormField label={`Question ${questionIndex + 1}`}>
                           <TextInput
-                            value={answer}
-                            disabled={!editMode}
+                            label="test"
+                            type="text"
+                            value={question}
                             onChange={({ target: { value } }) =>
-                              this.editAnswer({
-                                value,
-                                questionIndex,
-                                answerIndex,
-                              })
+                              this.editQuestion({ value, questionIndex })
                             }
+                            disabled={!editMode}
                           />
                         </FormField>
                       </Box>
-                      {editMode && answers.length > 2 && (
-                        <Button
-                          onClick={() => {
-                            this.removeAnswer({ questionIndex, answerIndex })
+                      {answers.map((answer, answerIndex) => (
+                        <Box
+                          direction="row"
+                          border={{
+                            size: 'small',
+                            side: 'bottom',
+                            color: 'dark-3',
                           }}
                         >
-                          <Box pad="small">
-                            <Trash />
+                          <Box
+                            width="small"
+                            key={`${answerIndex}-${questionIndex}`}
+                          >
+                            <FormField label={`Answer ${answerIndex + 1}`}>
+                              <TextInput
+                                value={answer}
+                                disabled={!editMode}
+                                onChange={({ target: { value } }) =>
+                                  this.editAnswer({
+                                    value,
+                                    questionIndex,
+                                    answerIndex,
+                                  })
+                                }
+                              />
+                            </FormField>
+                          </Box>
+                          {editMode && answers.length > 2 && (
+                            <Button
+                              onClick={() => {
+                                this.removeAnswer({
+                                  questionIndex,
+                                  answerIndex,
+                                })
+                              }}
+                            >
+                              <Box pad="small">
+                                <Trash />
+                              </Box>
+                            </Button>
+                          )}
+                        </Box>
+                      ))}
+
+                      {editMode &&
+                        questionList[questionIndex].answers.length <
+                          maxNumberAnswers && (
+                          <Box
+                            background="accent-4"
+                            align="center"
+                            justify="center"
+                          >
+                            <Button
+                              onClick={() => {
+                                this.addAnswer({ questionIndex })
+                              }}
+                            >
+                              <Box
+                                width="small"
+                                pad="small"
+                                direction="column"
+                                justify="center"
+                                align="center"
+                                border={{ size: 'small', color: 'dark-3' }}
+                                margin="5px"
+                              >
+                                <Box margin={{ bottom: '10px' }}>
+                                  <Add />
+                                </Box>
+                                <Text>Add Answer</Text>
+                              </Box>
+                            </Button>
+                          </Box>
+                        )}
+                      {editMode && (
+                        <Button
+                          onClick={() => this.removeQuestion({ questionIndex })}
+                        >
+                          <Box
+                            justify="center"
+                            align="center"
+                            pad="small"
+                            background="status-critical"
+                            color="light-2"
+                          >
+                            <Box margin={{ bottom: '5px' }}>
+                              <Trash size="small" />
+                            </Box>
+                            <Text>Remove Question</Text>
                           </Box>
                         </Button>
                       )}
                     </Box>
                   ))}
 
-                  {editMode &&
-                    questionList[questionIndex].answers.length <
-                      maxNumberAnswers && (
-                      <Box
-                        background="accent-4"
-                        align="center"
-                        justify="center"
-                      >
-                        <Button
-                          onClick={() => {
-                            this.addAnswer({ questionIndex })
-                          }}
-                        >
-                          <Box
-                            width="small"
-                            pad="medium"
-                            direction="column"
-                            justify="center"
-                            align="center"
-                            border={{ size: 'small', color: 'dark-3' }}
-                            margin="5px"
-                          >
-                            <Box margin={{ bottom: '10px' }}>
-                              <Add />
-                            </Box>
-                            <Text>Add Answer</Text>
-                          </Box>
-                        </Button>
-                      </Box>
-                    )}
-                  {editMode && (
-                    <Button
-                      onClick={() => this.removeQuestion({ questionIndex })}
+                  {editMode && questionList.length < maxNumberQuestions && (
+                    <Box
+                      background="brand"
+                      align="center"
+                      justify="center"
+                      width={{ min: '250px', max: 'large' }}
                     >
-                      <Box
-                        justify="center"
-                        align="center"
-                        pad="small"
-                        background="status-critical"
-                        color="light-2"
-                      >
-                        <Box margin={{ bottom: '5px' }}>
-                          <Trash size="small" />
+                      <Button onClick={this.addQuestion}>
+                        <Box
+                          width="small"
+                          pad="medium"
+                          direction="column"
+                          justify="center"
+                          align="center"
+                          border={{ size: 'small', color: 'dark-3' }}
+                          margin="5px"
+                        >
+                          <Box margin={{ bottom: '10px' }}>
+                            <Add />
+                          </Box>
+                          <Text>Add Question</Text>
                         </Box>
-                        <Text>Remove Question</Text>
-                      </Box>
-                    </Button>
+                      </Button>
+                    </Box>
                   )}
                 </Box>
-              ))}
-
-              {editMode && questionList.length < maxNumberQuestions && (
-                <Box
-                  background="brand"
-                  align="center"
-                  justify="center"
-                  width={{ min: '250px', max: 'large' }}
-                >
-                  <Button onClick={this.addQuestion}>
-                    <Box
-                      width="small"
-                      pad="medium"
-                      direction="column"
-                      justify="center"
-                      align="center"
-                      border={{ size: 'small', color: 'dark-3' }}
-                      margin="5px"
-                    >
-                      <Box margin={{ bottom: '10px' }}>
-                        <Add />
-                      </Box>
-                      <Text>Add Question</Text>
-                    </Box>
-                  </Button>
-                </Box>
-              )}
+              </Box>
             </Box>
-          </Box>
-        </Box>
+          </>
+        )}
       </>
     )
   }
