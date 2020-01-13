@@ -38,7 +38,7 @@ const ConfigStageDisplay = ({ status, setEditMode }) => (
 )
 
 ConfigStageDisplay.propTypes = {
-  status: PropTypes.number,
+  status: PropTypes.bool,
 }
 
 ConfigStageDisplay.defaultProps = {

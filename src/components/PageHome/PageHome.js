@@ -11,13 +11,14 @@ const PageHome = () => {
   const [numMessages, setNumMessages] = useState(0)
 
   useEffect(() => {
-    if (live) socket = io('http://10.0.0.154:80')
+    if (live) socket = io('http://10.0.0.154:4000')
   }, [live])
 
   useEffect(() => {
-    socket.on('message', payload => {
-      setMessages([...messages, payload])
-    })
+    if (socket)
+      socket.on('message', payload => {
+        setMessages([...messages, payload])
+      })
     document.title = `>>> ${numMessages} <<< `
   }, [socket, numMessages])
 

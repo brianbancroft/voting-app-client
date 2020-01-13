@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
 import { Add, Trash } from 'grommet-icons'
-import { ConfigStageDisplay } from '..'
+import { ConfigStageDisplay, LoadingIcon } from '..'
+import { get } from 'axios'
 
 const maxNumberQuestions = 18
 const maxNumberAnswers = 4
@@ -10,18 +11,27 @@ class PageAdmin extends Component {
   constructor() {
     super()
     this.state = {
+      loading: true,
+      error: false,
       editMode: true,
-      questionList: [
-        {
-          question: 'Text for the first question',
-          answers: ['Answer 1', 'Answer 2'],
-        },
-        {
-          question: 'Text for the second question',
-          answers: ['Answer 1', 'Answer 2'],
-        },
-      ],
+      questionList: [],
     }
+  }
+
+  async componentDidMount() {
+    const url = 'http://localhost:4000/poll'
+
+    const response = await get(url).catch(e => {
+      console.error(e)
+      this.setState({ error: true, loading: false })
+    })
+
+    const { data: questionList } = response
+
+    // this.setState({
+    //   loading: false,
+    //   questionList,
+    // })
   }
 
   setEditMode = editMode => this.setState({ editMode })
@@ -33,8 +43,8 @@ class PageAdmin extends Component {
       questionList: [
         ...questionList,
         {
-          question: 'What is the question?',
-          answers: ['Answer 1', 'Answer 2'],
+          question: '',
+          answers: ['', ''],
         },
       ],
     })
@@ -83,9 +93,25 @@ class PageAdmin extends Component {
 
   render() {
     document.title = 'Voting App - Admin Page'
-    const { questionList, editMode } = this.state
+    const { questionList, editMode, loading, error } = this.state
 
-    return (
+    return loading ? (
+      <Box
+        direction="column"
+        justify="center"
+        align="center"
+        pad="large"
+        background="accent-2"
+        height="large"
+      >
+        <Box margin={{ bottom: '25px' }}>
+          <LoadingIcon />
+        </Box>
+        <Text size="24px" color="light-2">
+          Loading...
+        </Text>
+      </Box>
+    ) : (
       <>
         <Box direction="column">
           <ConfigStageDisplay
