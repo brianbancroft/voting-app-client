@@ -2,24 +2,30 @@ import React, { useEffect, useState } from 'react'
 import { Box, Button, Heading } from 'grommet'
 import io from 'socket.io-client'
 
-const socket = io('http://10.0.0.154:80')
+let socket
 const PageHome = () => {
   const [canVote, setCanVote] = useState(true)
+  const [live, setLive] = useState(false)
   const [choice, setChoice] = useState(null)
   const [messages, setMessages] = useState([])
   const [numMessages, setNumMessages] = useState(0)
+
+  useEffect(() => {
+    if (live) socket = io('http://10.0.0.154:80')
+  }, [live])
 
   useEffect(() => {
     socket.on('message', payload => {
       setMessages([...messages, payload])
     })
     document.title = `>>> ${numMessages} <<< `
-  }, [numMessages])
+  }, [socket, numMessages])
 
   const sendMessage = () => {
-    socket.emit('message', {
-      message: 'test test test',
-    })
+    if (socket)
+      socket.emit('message', {
+        message: 'test test test',
+      })
     setMessages([...messages, { message: 'test test test' }])
     setNumMessages(numMessages + 1)
   }
