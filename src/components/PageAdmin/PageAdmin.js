@@ -24,6 +24,8 @@ class PageAdmin extends Component {
     }
   }
 
+  setEditMode = editMode => this.setState({ editMode })
+
   addQuestion = () => {
     const { questionList } = this.state
 
@@ -73,10 +75,10 @@ class PageAdmin extends Component {
     return (
       <>
         <Box direction="column">
-          <Box>
-            <Heading level={3}>Voting</Heading>
-          </Box>
-          <ConfigStageDisplay />
+          <ConfigStageDisplay
+            setEditMode={this.setEditMode}
+            status={editMode}
+          />
           <Box>
             <Box direction="row" overflow={{ horizontal: 'scroll' }}>
               {questionList.map(({ question, answers }, questionIndex) => (
