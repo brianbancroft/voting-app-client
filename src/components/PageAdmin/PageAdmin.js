@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
 import { Add, Trash, Troubleshoot } from 'grommet-icons'
-import { ConfigStageDisplay, LoadingIcon } from '..'
+import {
+  ConfigStageDisplay,
+  LoadingIcon,
+  QuestionAnswerForm,
+  SectionAdminActiveVoting,
+} from '..'
 import { get, post } from 'axios'
 
 const maxNumberQuestions = 18
@@ -15,6 +20,7 @@ class PageAdmin extends Component {
       error: false,
       editMode: true,
       questionList: [],
+      selectedQuestion: 0,
     }
   }
 
@@ -101,7 +107,13 @@ class PageAdmin extends Component {
 
   render() {
     document.title = 'Voting App - Admin Page'
-    const { questionList, editMode, loading, error } = this.state
+    const {
+      questionList,
+      editMode,
+      loading,
+      error,
+      selectedQuestion,
+    } = this.state
 
     return (
       <>
@@ -171,47 +183,16 @@ class PageAdmin extends Component {
                         </FormField>
                       </Box>
                       {answers.map((answer, answerIndex) => (
-                        <Box
-                          direction="row"
-                          border={{
-                            size: 'small',
-                            side: 'bottom',
-                            color: 'dark-3',
-                          }}
-                        >
-                          <Box
-                            width="small"
-                            key={`${answerIndex}-${questionIndex}`}
-                          >
-                            <FormField label={`Answer ${answerIndex + 1}`}>
-                              <TextInput
-                                value={answer}
-                                disabled={!editMode}
-                                onChange={({ target: { value } }) =>
-                                  this.editAnswer({
-                                    value,
-                                    questionIndex,
-                                    answerIndex,
-                                  })
-                                }
-                              />
-                            </FormField>
-                          </Box>
-                          {editMode && answers.length > 2 && (
-                            <Button
-                              onClick={() => {
-                                this.removeAnswer({
-                                  questionIndex,
-                                  answerIndex,
-                                })
-                              }}
-                            >
-                              <Box pad="small">
-                                <Trash />
-                              </Box>
-                            </Button>
-                          )}
-                        </Box>
+                        <QuestionAnswerForm
+                          answers={answers}
+                          answer={answer}
+                          editMode={editMode}
+                          editAnswer={this.editAnswer}
+                          removeAnswer={this.removeAnswer}
+                          removeQuestion={this.removeQuestion}
+                          questionIndex={questionIndex}
+                          answerIndex={answerIndex}
+                        />
                       ))}
 
                       {editMode &&
@@ -262,6 +243,37 @@ class PageAdmin extends Component {
                           </Box>
                         </Button>
                       )}
+                      {!editMode && (
+                        <>
+                          {selectedQuestion === questionIndex ? (
+                            <Box
+                              pad="small"
+                              direction="row"
+                              justify="center"
+                              background="accent-4"
+                            >
+                              <Text>Selected</Text>
+                            </Box>
+                          ) : (
+                            <Button
+                              onClick={() => {
+                                this.setState({
+                                  selectedQuestion: questionIndex,
+                                })
+                              }}
+                            >
+                              <Box
+                                pad="small"
+                                background="accent-1"
+                                direction="row"
+                                justify="center"
+                              >
+                                <Text>Select for Voting</Text>
+                              </Box>
+                            </Button>
+                          )}
+                        </>
+                      )}
                     </Box>
                   ))}
 
@@ -292,6 +304,11 @@ class PageAdmin extends Component {
                   )}
                 </Box>
               </Box>
+              {!editMode && (
+                <SectionAdminActiveVoting
+                  questionObj={questionList[selectedQuestion]}
+                />
+              )}
             </Box>
           </>
         )}

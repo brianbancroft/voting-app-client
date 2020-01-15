@@ -17,7 +17,6 @@ const colors = {
   },
   darkTheme: {
     backgroundPrimary: '#3c4043',
-
   },
   sparkgeoColors: {
     sapling: '#E1CAAB',
@@ -25,8 +24,7 @@ const colors = {
     chenin: '#E0C971',
     ronchi: '#ED8F59',
     casablanca: '#F4B449',
-
-  }
+  },
 }
 
 /*
@@ -77,6 +75,7 @@ const grommetTheme = {
       'accent-2': '#FD6FFF',
       'accent-3': '#81FCED',
       'accent-4': '#FFCA58',
+      tumbleweed: colors.tumbleweed,
       'dark-1': '#333333',
       'dark-2': '#555555',
       'dark-3': '#777777',
