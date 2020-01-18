@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Button, Heading, List, Text } from 'grommet'
+import { SocketContext } from '../../context'
 /*
   Administers active voting
 
@@ -10,47 +11,31 @@ import io from 'socket.io-client'
 let socket
 
 const SectionAdminActiveVoting = ({ questionObj, questionIndex }) => {
+  const {
+    connected,
+    error,
+    votingActive,
+    setVotingActive,
+    setAdminPresent,
+    setActiveQuestion,
+  } = useContext(SocketContext)
   const { question, answers } = questionObj
-  const [votingActive, setVotingActive] = useState(false)
   // const [voteCount, setVoteCount] = useState(new Array(answers.length).fill(0))
-  const [connected, setConnected] = useState(false)
-  // Configure and tear down websockets on mount and dismount
-  useEffect(() => {
-    socket = io('http://10.0.0.154:4000')
-    console.log('Use effect triggere for admin voting section ')
-    socket.on('connect', () => {
-      console.log('Connection detected')
 
-      setConnected(true)
-      socket.emit('admin-enter')
-    })
-    socket.on('disconnect', () => {
-      console.log('disconnect detected')
-    })
-    socket.on('event', e => {
-      console.log('Event detected')
-    })
+  useEffect(() => {
+    setAdminPresent(true)
 
     // Actions on teardown
     return () => {
-      if (connected) {
-        socket.emit('admin-leave')
-      }
+      setAdminPresent(false)
     }
   })
 
   // Set question to user
   useEffect(() => {
     setVotingActive(false)
-    socket.emit('set-active-question', { questionIndex })
+    setActiveQuestion(questionIndex)
   }, [questionIndex])
-
-  // Toggle between when voting is active and inactive
-  useEffect(() => {
-    if (connected) {
-      socket.emit('set-voting-active')
-    }
-  }, [votingActive])
 
   return (
     <Box direction="column">

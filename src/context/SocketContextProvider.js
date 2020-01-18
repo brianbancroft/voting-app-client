@@ -11,7 +11,8 @@ class SocketContextProvider extends Component {
       error: false,
       question: '',
       answers: [],
-      votingOpen: false,
+      votingActive: false,
+      adminPresent: false,
     }
   }
 
@@ -34,17 +35,57 @@ class SocketContextProvider extends Component {
       console.warn('disconnected')
       this.setState({ connected: false })
     })
+
+    socket.on('set-voting-active', () => {
+      this.setState({ votingActive: true })
+    })
+
+    socket.on('set-voting-disabled', () => {
+      this.setState({ votingActive: false })
+    })
+
+    socket.on('admin-enter', () => {
+      this.setState({ adminPresent: true })
+    })
+    socket.on('admin-exit', () => {
+      this.setState({ adminPresent: false })
+    })
   }
 
   sendVote = index => {
     socket.emit('vote', index)
   }
 
+  setAdminPresent = present => {
+    socket.emit(present ? 'admin-enter' : 'admin-exit')
+  }
+
+  setVotingActive = active => {
+    socket.emit(active ? 'set-voting-active' : 'set-voting-disabled')
+  }
+
+  setActiveQuestion = questionIndex => {
+    socket.emit('set-active-question', { questionIndex })
+  }
+
   render() {
-    const { sendVote } = this
+    const {
+      sendVote,
+      setAdminPresent,
+      setVotingActive,
+      setActiveQuestion,
+    } = this
 
     return (
-      <SocketContext.Provider value={{ ...this.state, sendVote }}>
+      <SocketContext.Provider
+        value={{
+          ...this.state,
+          sendVote,
+          setAdminPresent,
+          setVotingActive,
+          setActiveQuestion,
+        }}
+      >
         {this.props.children}
       </SocketContext.Provider>
     )
