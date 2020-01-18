@@ -31,10 +31,12 @@
     "lint-staged": "^8.1.7",
     "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
-    "react-test-renderer": "^16.8.6"
+    "react-test-renderer": "^16.8.6",
+    "serve": "^11.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
+    "serve": "serve -s build",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "test": "react-scripts test",
