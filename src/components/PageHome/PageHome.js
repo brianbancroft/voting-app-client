@@ -1,52 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Box, Button, Heading, Text } from 'grommet'
-import io from 'socket.io-client'
 import { AnimatedEllipsis } from '..'
+import { SocketContext } from '../../context'
 
-let socket = io('http://10.0.0.154:4000')
 const PageHome = () => {
-  const [canVote, setCanVote] = useState(true)
-  const [connected, setConntected] = useState(false)
-  const [connecting, setConnecting] = useState(true)
-  const [choice, setChoice] = useState(null)
-  const [question, setQuestion] = useState('No question set')
-  const [answers, setAnswers] = useState([])
+  const { connected, question, answers } = useContext(SocketContext)
+  const [voted, setVoted] = useState(false)
 
+  // Allows user to vote again if voted
   useEffect(() => {
-    if (socket) {
-      socket.on('change-question', ({ question, answers }) => {
-        setQuestion(question)
-        setAnswers(answers)
-      })
-
-      socket.on('error', payload => {
-        console.error('Error in socket ', payload)
-      })
-
-      socket.on('connect', () => {
-        setConntected(true)
-        setConnecting(false)
-      })
-
-      socket.on('disconnect', () => {
-        console.log('disconnected')
-      })
-    }
-  }, [socket])
-
-  const sendMessage = () => {
-    if (socket) {
-      socket.emit('message', {
-        message: 'test test test',
-      })
-    }
-  }
-
-  const vote = userVote => {
-    setCanVote(false)
-    setChoice(userVote)
-    sendMessage()
-  }
+    setVoted(false)
+  }, [question])
 
   const Answer = (answer, index) => {
     return (
@@ -61,7 +25,6 @@ const PageHome = () => {
   return (
     <Box border={{ size: 'small', color: 'highlight' }} pad="large">
       <Heading size="h2">{question}</Heading>
-      {choice && <Box>Vote Choice: {choice} </Box>}
       <Box
         justify="between"
         border={{ size: 'small', color: 'dark-2' }}
@@ -70,7 +33,7 @@ const PageHome = () => {
       >
         {answers.map(Answer)}
       </Box>
-      {!connected && connecting && (
+      {!connected && (
         <Box margin={{ top: '20px' }}>
           <Text>
             <AnimatedEllipsis>Connecting</AnimatedEllipsis>
