@@ -4,7 +4,7 @@ import { AnimatedEllipsis } from '..'
 import { SocketContext } from '../../context'
 
 const PageHome = () => {
-  const { connected, question, answers, votingActive } = useContext(
+  const { connected, question, answers, sendVote, votingActive } = useContext(
     SocketContext,
   )
   const [voted, setVoted] = useState(false)
@@ -14,12 +14,19 @@ const PageHome = () => {
     setVoted(false)
   }, [question])
 
+  const selectResponse = index => {
+    setVoted(true)
+    sendVote(index)
+  }
+
   const Answer = (answer, index) => {
     return (
       <Button
-        onClick={() => {}}
+        onClick={() => {
+          selectResponse(index)
+        }}
         key={index}
-        disabled={connected && !votingActive}
+        disabled={!connected || !votingActive || voted}
       >
         <Box height="xsmall" width="small" background="accent-2">
           {answer}
