@@ -7,9 +7,6 @@ import { SocketContext } from '../../context'
 
 */
 
-import io from 'socket.io-client'
-let socket
-
 const SectionAdminActiveVoting = ({ questionObj, questionIndex }) => {
   const {
     connected,

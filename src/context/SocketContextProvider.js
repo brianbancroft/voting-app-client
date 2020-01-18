@@ -37,6 +37,7 @@ class SocketContextProvider extends Component {
     })
 
     socket.on('set-voting-active', () => {
+      console.log('Set voting active triggered')
       this.setState({ votingActive: true })
     })
 

@@ -4,7 +4,9 @@ import { AnimatedEllipsis } from '..'
 import { SocketContext } from '../../context'
 
 const PageHome = () => {
-  const { connected, question, answers } = useContext(SocketContext)
+  const { connected, question, answers, votingActive } = useContext(
+    SocketContext,
+  )
   const [voted, setVoted] = useState(false)
 
   // Allows user to vote again if voted
@@ -14,7 +16,11 @@ const PageHome = () => {
 
   const Answer = (answer, index) => {
     return (
-      <Button onClick={() => {}} key={index}>
+      <Button
+        onClick={() => {}}
+        key={index}
+        disabled={connected && !votingActive}
+      >
         <Box height="xsmall" width="small" background="accent-2">
           {answer}
         </Box>
@@ -37,6 +43,19 @@ const PageHome = () => {
         <Box margin={{ top: '20px' }}>
           <Text>
             <AnimatedEllipsis>Connecting</AnimatedEllipsis>
+          </Text>
+        </Box>
+      )}
+      {connected && votingActive ? (
+        <Box margin={{ top: '20px' }}>
+          <Text>
+            <Text>Voting Active</Text>
+          </Text>
+        </Box>
+      ) : (
+        <Box margin={{ top: '20px' }}>
+          <Text>
+            <Text>Voting not Active</Text>
           </Text>
         </Box>
       )}
