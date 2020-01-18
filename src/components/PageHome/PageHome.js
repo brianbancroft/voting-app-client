@@ -9,13 +9,14 @@ const PageHome = () => {
   const [connected, setConntected] = useState(false)
   const [connecting, setConnecting] = useState(true)
   const [choice, setChoice] = useState(null)
-  const [messages, setMessages] = useState([])
-  const [numMessages, setNumMessages] = useState(0)
+  const [question, setQuestion] = useState('No question set')
+  const [answers, setAnswers] = useState([])
 
   useEffect(() => {
     if (socket) {
-      socket.on('message', payload => {
-        setMessages([...messages, payload])
+      socket.on('change-question', ({ question, answers }) => {
+        setQuestion(question)
+        setAnswers(answers)
       })
 
       socket.on('error', payload => {
@@ -31,17 +32,14 @@ const PageHome = () => {
         console.log('disconnected')
       })
     }
-
-    document.title = `>>> ${numMessages} <<< `
-  }, [socket, numMessages])
+  }, [socket])
 
   const sendMessage = () => {
-    if (socket)
+    if (socket) {
       socket.emit('message', {
         message: 'test test test',
       })
-    setMessages([...messages, { message: 'test test test' }])
-    setNumMessages(numMessages + 1)
+    }
   }
 
   const vote = userVote => {
@@ -50,9 +48,19 @@ const PageHome = () => {
     sendMessage()
   }
 
+  const Answer = (answer, index) => {
+    return (
+      <Button onClick={() => {}} key={index}>
+        <Box height="xsmall" width="small" background="accent-2">
+          {answer}
+        </Box>
+      </Button>
+    )
+  }
+
   return (
     <Box border={{ size: 'small', color: 'highlight' }} pad="large">
-      <Heading size="h2">Hello Home</Heading>
+      <Heading size="h2">{question}</Heading>
       {choice && <Box>Vote Choice: {choice} </Box>}
       <Box
         justify="between"
@@ -60,16 +68,7 @@ const PageHome = () => {
         direction="row"
         width="large"
       >
-        <Button onClick={() => vote('Choice A')} disabled={!canVote}>
-          <Box height="xsmall" width="small" background="accent-2">
-            Choice A
-          </Box>
-        </Button>
-        <Button onClick={() => vote('Choice B')} disabled={!canVote}>
-          <Box height="xsmall" width="small" background="accent-3">
-            Choice B
-          </Box>
-        </Button>
+        {answers.map(Answer)}
       </Box>
       {!connected && connecting && (
         <Box margin={{ top: '20px' }}>

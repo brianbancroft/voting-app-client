@@ -184,6 +184,7 @@ class PageAdmin extends Component {
                       </Box>
                       {answers.map((answer, answerIndex) => (
                         <QuestionAnswerForm
+                          key={answerIndex}
                           answers={answers}
                           answer={answer}
                           editMode={editMode}
@@ -306,6 +307,7 @@ class PageAdmin extends Component {
               </Box>
               {!editMode && (
                 <SectionAdminActiveVoting
+                  questionIndex={selectedQuestion}
                   questionObj={questionList[selectedQuestion]}
                 />
               )}

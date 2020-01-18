@@ -7,21 +7,29 @@ import { Box, Button, Heading, List, Text } from 'grommet'
 */
 
 import io from 'socket.io-client'
-const socket = io('http://localhost:4000')
+let socket
 
-const SectionAdminActiveVoting = ({ questionObj }) => {
+const SectionAdminActiveVoting = ({ questionObj, questionIndex }) => {
   const { question, answers } = questionObj
   const [votingActive, setVotingActive] = useState(false)
-  const [voteCount, setVoteCount] = useState(new Array(answers.length).fill(0))
+  // const [voteCount, setVoteCount] = useState(new Array(answers.length).fill(0))
   const [connected, setConnected] = useState(false)
   // Configure and tear down websockets on mount and dismount
-  useState(() => {
+  useEffect(() => {
+    socket = io('http://10.0.0.154:4000')
+    console.log('Use effect triggere for admin voting section ')
     socket.on('connect', () => {
+      console.log('Connection detected')
+
       setConnected(true)
       socket.emit('admin-enter')
     })
-    socket.on('disconnect', () => {})
-    socket.on('event', e => {})
+    socket.on('disconnect', () => {
+      console.log('disconnect detected')
+    })
+    socket.on('event', e => {
+      console.log('Event detected')
+    })
 
     // Actions on teardown
     return () => {
@@ -32,12 +40,13 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
   })
 
   // Set question to user
-  useState(() => {
+  useEffect(() => {
     setVotingActive(false)
-  }, [questionObj])
+    socket.emit('set-active-question', { questionIndex })
+  }, [questionIndex])
 
   // Toggle between when voting is active and inactive
-  useState(() => {
+  useEffect(() => {
     if (connected) {
       socket.emit('set-voting-active')
     }
@@ -50,8 +59,8 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
       <Box direction="row" justify="between" width="80vw" margin="auto">
         <Box direction="column">
           <Box direction="row">
-            <List data={answers} />
-            <List data={voteCount} />
+            {/* <List data={answers} />
+            <List data={[0, 0]} /> */}
           </Box>
           <Box>
             {votingActive ? (
@@ -62,7 +71,10 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
           </Box>
         </Box>
         <Box justify="around">
-          <Button onClick={() => setVotingActive(true)} disabled={votingActive}>
+          <Button
+            onClick={() => setVotingActive(true)}
+            disabled={votingActive || !connected}
+          >
             <Box
               border={{ size: 'medium', color: 'dark-4' }}
               pad="medium"
@@ -73,7 +85,7 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
           </Button>
           <Button
             onClick={() => setVotingActive(false)}
-            disabled={!votingActive}
+            disabled={!votingActive || !connected}
           >
             <Box
               border={{ size: 'medium', color: 'dark-4' }}
@@ -84,6 +96,9 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
             </Box>
           </Button>
         </Box>
+      </Box>
+      <Box>
+        <Text>Current status: {connected ? 'Connected' : 'Not Connected'}</Text>
       </Box>
     </Box>
   )
