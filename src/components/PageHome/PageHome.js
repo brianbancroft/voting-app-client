@@ -7,6 +7,7 @@ let socket = io('http://10.0.0.154:4000')
 const PageHome = () => {
   const [canVote, setCanVote] = useState(true)
   const [connected, setConntected] = useState(false)
+  const [connecting, setConnecting] = useState(true)
   const [choice, setChoice] = useState(null)
   const [messages, setMessages] = useState([])
   const [numMessages, setNumMessages] = useState(0)
@@ -23,6 +24,7 @@ const PageHome = () => {
 
       socket.on('connect', () => {
         setConntected(true)
+        setConnecting(false)
       })
 
       socket.on('disconnect', () => {
@@ -69,7 +71,7 @@ const PageHome = () => {
           </Box>
         </Button>
       </Box>
-      {!connected && (
+      {!connected && connecting && (
         <Box margin={{ top: '20px' }}>
           <Text>
             <AnimatedEllipsis>Connecting</AnimatedEllipsis>
