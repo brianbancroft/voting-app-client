@@ -5,15 +5,31 @@ import { Box, Button, Heading, List, Text } from 'grommet'
   Administers active voting
 
 */
+
+import io from 'socket.io-client'
+const socket = io('http://localhost:4000')
+
 const SectionAdminActiveVoting = ({ questionObj }) => {
   const { question, answers } = questionObj
   const [votingActive, setVotingActive] = useState(false)
-  const [answerVotes, setAnswerVotes] = useState(null)
-
-  const tempVotes = new Array(answers.length).fill(2)
-
+  const [voteCount, setVoteCount] = useState(new Array(answers.length).fill(0))
+  const [connected, setConnected] = useState(false)
   // Configure and tear down websockets on mount and dismount
-  useState(() => {}, [])
+  useState(() => {
+    socket.on('connect', () => {
+      setConnected(true)
+      socket.emit('admin-enter')
+    })
+    socket.on('disconnect', () => {})
+    socket.on('event', e => {})
+
+    // Actions on teardown
+    return () => {
+      if (connected) {
+        socket.emit('admin-leave')
+      }
+    }
+  })
 
   // Set question to user
   useState(() => {
@@ -21,7 +37,11 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
   }, [questionObj])
 
   // Toggle between when voting is active and inactive
-  useState(() => {}, [votingActive])
+  useState(() => {
+    if (connected) {
+      socket.emit('set-voting-active')
+    }
+  }, [votingActive])
 
   return (
     <Box direction="column">
@@ -31,7 +51,7 @@ const SectionAdminActiveVoting = ({ questionObj }) => {
         <Box direction="column">
           <Box direction="row">
             <List data={answers} />
-            <List data={tempVotes} />
+            <List data={voteCount} />
           </Box>
           <Box>
             {votingActive ? (

@@ -1,8 +1,6 @@
-import React, { Component } from 'react'
-import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
-import { Add, Trash, Troubleshoot } from 'grommet-icons'
-import { ConfigStageDisplay, LoadingIcon } from '..'
-import { get, post } from 'axios'
+import React from 'react'
+import { Box, FormField, Button, TextInput } from 'grommet'
+import { Trash } from 'grommet-icons'
 
 const maxNumberQuestions = 18
 const maxNumberAnswers = 4
