@@ -3,3 +3,6 @@
 TODOS
 - [ ] Centralize Connection to a Context Component
 - [ ] Overhaul effects for a given vote.
+- [ ] Handle latecomers to an active vote
+- [ ] Use oAuth to ensure one person, one vote.
+- [ ] Restrict admin path to a given voter.
