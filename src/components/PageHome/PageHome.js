@@ -1,24 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Button, Heading } from 'grommet'
+import { Box, Button, Heading, Text } from 'grommet'
 import io from 'socket.io-client'
+import { AnimatedEllipsis } from '..'
 
-let socket
+let socket = io('http://10.0.0.154:4000')
 const PageHome = () => {
   const [canVote, setCanVote] = useState(true)
-  const [live, setLive] = useState(false)
+  const [connected, setConntected] = useState(false)
   const [choice, setChoice] = useState(null)
   const [messages, setMessages] = useState([])
   const [numMessages, setNumMessages] = useState(0)
 
   useEffect(() => {
-    if (live) socket = io('http://10.0.0.154:4000')
-  }, [live])
-
-  useEffect(() => {
-    if (socket)
+    if (socket) {
       socket.on('message', payload => {
         setMessages([...messages, payload])
       })
+
+      socket.on('error', payload => {
+        console.error('Error in socket ', payload)
+      })
+
+      socket.on('connect', () => {
+        setConntected(true)
+      })
+
+      socket.on('disconnect', () => {
+        console.log('disconnected')
+      })
+    }
+
     document.title = `>>> ${numMessages} <<< `
   }, [socket, numMessages])
 
@@ -58,6 +69,13 @@ const PageHome = () => {
           </Box>
         </Button>
       </Box>
+      {!connected && (
+        <Box margin={{ top: '20px' }}>
+          <Text>
+            <AnimatedEllipsis>Connecting</AnimatedEllipsis>
+          </Text>
+        </Box>
+      )}
     </Box>
   )
 }
