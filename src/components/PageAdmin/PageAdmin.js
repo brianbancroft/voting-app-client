@@ -89,7 +89,10 @@ const PageAdmin = () => {
               <Heading level={3}>Voting Controls</Heading>
             </Box>
             <Box direction="row" justify="around">
-              <Button onClick={() => setQuestionIndex(null)}>
+              <Button
+                onClick={() => setQuestionIndex(null)}
+                disabled={selectedQuestion === null}
+              >
                 <Box pad="medium" background="accent-1">
                   <Text>Reset Question</Text>
                 </Box>
