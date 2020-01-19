@@ -2,17 +2,11 @@ import React from 'react'
 import { Box, FormField, Button, TextInput } from 'grommet'
 import { Trash } from 'grommet-icons'
 
-const maxNumberQuestions = 18
-const maxNumberAnswers = 4
-
 const QuestionAnswerForm = ({
-  onChange,
   answers,
   answer,
-  editMode,
   removeAnswer,
   editAnswer,
-  removeQuestion,
   questionIndex,
   answerIndex,
 }) => {
@@ -29,7 +23,6 @@ const QuestionAnswerForm = ({
         <FormField label={`Answer ${answerIndex + 1}`}>
           <TextInput
             value={answer}
-            disabled={!editMode}
             onChange={event =>
               editAnswer({
                 value: event.target.value,
@@ -40,7 +33,7 @@ const QuestionAnswerForm = ({
           />
         </FormField>
       </Box>
-      {editMode && answers.length > 2 && (
+      {answers.length > 2 && (
         <Button
           onClick={() => {
             removeAnswer({

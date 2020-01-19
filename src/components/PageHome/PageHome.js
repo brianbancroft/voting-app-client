@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Box, Button, Heading, Text } from 'grommet'
-import { AnimatedEllipsis } from '..'
+import { Box, Button, DataTable, Heading, Text, Meter } from 'grommet'
+import { AnimatedEllipsis, VoteTable } from '..'
 import { SocketContext } from '../../context'
 
 const PageHome = () => {
-  const { connected, question, answers, sendVote, votingActive } = useContext(
-    SocketContext,
-  )
+  const {
+    connected,
+    question,
+    answers,
+    sendVote,
+    votingActive,
+    votes,
+  } = useContext(SocketContext)
   const [voted, setVoted] = useState(false)
 
   // Allows user to vote again if voted
@@ -19,7 +24,7 @@ const PageHome = () => {
     sendVote(index)
   }
 
-  const Answer = (answer, index) => {
+  const AnswerButton = (answer, index) => {
     return (
       <Button
         onClick={() => {
@@ -44,7 +49,7 @@ const PageHome = () => {
         direction="row"
         width="large"
       >
-        {answers.map(Answer)}
+        {answers.map(AnswerButton)}
       </Box>
       {!connected && (
         <Box margin={{ top: '20px' }}>
@@ -66,6 +71,7 @@ const PageHome = () => {
           </Text>
         </Box>
       )}
+      <VoteTable answers={answers} votes={votes} />
     </Box>
   )
 }

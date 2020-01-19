@@ -11,7 +11,13 @@ import { Grommet } from 'grommet'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
 import { SocketContextProvider } from './context'
-import { Layout, PageHome, PageAbout, PageAdmin } from './components'
+import {
+  Layout,
+  PageHome,
+  PageAbout,
+  PageAdmin,
+  PageEditQuestions,
+} from './components'
 import theme from './theme'
 import './App.css'
 
@@ -28,6 +34,9 @@ function App() {
                 </Route>
                 <Route path="/about">
                   <PageAbout />
+                </Route>
+                <Route path="/edit-questions">
+                  <PageEditQuestions />
                 </Route>
                 <Route path="/">
                   <PageHome />

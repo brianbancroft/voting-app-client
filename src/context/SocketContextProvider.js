@@ -11,6 +11,7 @@ class SocketContextProvider extends Component {
       error: false,
       question: '',
       answers: [],
+      votes: {},
       votingActive: false,
       adminPresent: false,
     }
