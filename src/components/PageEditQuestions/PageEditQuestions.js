@@ -109,7 +109,7 @@ class PageAdmin extends Component {
   }
 
   render() {
-    document.title = 'Voting App - Admin Page'
+    document.title = 'Voting App - Edit Questions'
     const { questionList, loading, error, selectedQuestion } = this.state
 
     return (
