@@ -8,13 +8,17 @@ const Layout = ({ children }) => (
     <Main>
       <Grid rows={['xxsmall', '1fr', 'xsmall']} fill="vertical">
         <Header background="highlight">
-          <Link to="/">
-            <Text>Voting App</Text>
-          </Link>
+          <Box pad="medium">
+            <Link to="/">
+              <Text>Voting App</Text>
+            </Link>
+          </Box>
         </Header>
         <Box overflow={{ vertical: 'scroll' }}>{children}</Box>
         <Footer background="brand">
-          <Link to="/about">Learn More</Link>
+          <Box pad="medium">
+            <Link to="/about">Learn More</Link>
+          </Box>
         </Footer>
       </Grid>
     </Main>

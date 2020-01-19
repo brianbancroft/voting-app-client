@@ -18,9 +18,12 @@ const PageAdmin = () => {
   const [selectedStage, setSelectedStage] = useState(0)
   const [selectedQuestion, setSelectedQuestion] = useState(null)
 
-  const { setActiveQuestion, setVotingActive, setAdminPresent } = useContext(
-    SocketContext,
-  )
+  const {
+    setActiveQuestion,
+    votingActive,
+    setVotingActive,
+    setAdminPresent,
+  } = useContext(SocketContext)
 
   useEffect(() => {
     const loadData = async () => {
@@ -94,15 +97,43 @@ const PageAdmin = () => {
                 disabled={selectedQuestion === null}
               >
                 <Box pad="medium" background="accent-1">
-                  <Text>Reset Question</Text>
+                  <Text>
+                    {selectedQuestion === null
+                      ? 'Question not set'
+                      : 'Reset Question'}
+                  </Text>
                 </Box>
               </Button>
-              <Button>
+              <Button
+                disabled={votingActive || selectedQuestion === null}
+                onClick={() => {
+                  setVotingActive(true)
+                  setSelectedStage(2)
+                }}
+              >
+                <Box pad="medium" background="accent-1">
+                  <Text>Reveal Question</Text>
+                </Box>
+              </Button>
+
+              <Button
+                disabled={votingActive || selectedQuestion === null}
+                onClick={() => {
+                  setVotingActive(true)
+                  setSelectedStage(2)
+                }}
+              >
                 <Box pad="medium" background="accent-1">
                   <Text>Start Voting</Text>
                 </Box>
               </Button>
-              <Button>
+              <Button
+                disabled={!votingActive}
+                onClick={() => {
+                  setVotingActive(false)
+                  setSelectedStage(3)
+                }}
+              >
                 <Box pad="medium" background="accent-1">
                   <Text>End Voting</Text>
                 </Box>
