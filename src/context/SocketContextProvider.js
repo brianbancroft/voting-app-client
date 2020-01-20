@@ -52,6 +52,13 @@ class SocketContextProvider extends Component {
     socket.on('admin-exit', () => {
       this.setState({ adminPresent: false })
     })
+
+    socket.on(
+      'initial-context',
+      ({ selectedVotingStage, selectedQuestion }) => {
+        console.log('Initial context object returned')
+      },
+    )
   }
 
   votingStages = [
