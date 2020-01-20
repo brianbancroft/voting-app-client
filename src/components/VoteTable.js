@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { Box, Button, DataTable, Heading, Text, Meter } from 'grommet'
+import React from 'react'
+import { Box, DataTable, Text, Meter } from 'grommet'
 
 const VoteTable = ({ answers, votes }) => {
   if (!answers) {
