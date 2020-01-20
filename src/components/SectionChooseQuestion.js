@@ -9,6 +9,7 @@ const SectionChooseQuestion = ({
   <Box direction="row" justify="around" wrap>
     {questions.map(({ question, answers }, index) => (
       <Button
+        key={`${question}-${index}`}
         onClick={() => {
           selectQuestion(index)
         }}
