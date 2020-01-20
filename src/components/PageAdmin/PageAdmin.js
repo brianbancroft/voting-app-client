@@ -33,6 +33,13 @@ const PageAdmin = () => {
       setLoading(false)
     }
     loadData()
+
+    setAdminPresent(true)
+
+    // Shut down when admin not present
+    return () => {
+      setAdminPresent(false)
+    }
   }, [])
 
   const setQuestionIndex = index => {
