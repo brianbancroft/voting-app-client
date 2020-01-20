@@ -1,8 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
+import React, { useState, useEffect } from 'react'
+import { Box, Heading, Button } from 'grommet'
 import {
   LoadingDisplayAdminPage,
-  ErrorDisplayAdminPage,
+  // ErrorDisplayAdminPage,
   SectionChooseQuestion,
   SectionAdminVotingControls,
 } from '..'
@@ -16,7 +16,6 @@ const PageAdmin = () => {
   document.title = 'Voting App - Admin Page'
   const [loading, setLoading] = useState(true)
   const [questionList, setQuestionList] = useState([])
-  const [selectedQuestion, setSelectedQuestion] = useState(null)
 
   const {
     setActiveQuestion,
@@ -25,6 +24,7 @@ const PageAdmin = () => {
     setSelectedStage,
     selectedStage,
     votingStages,
+    selectedQuestionIndex,
   } = useContext(SocketContext)
 
   const currentStage = votingStages[selectedStage]
@@ -45,22 +45,22 @@ const PageAdmin = () => {
     return () => {
       setAdminPresent(false)
     }
-  }, [])
+  }, [setAdminPresent])
 
   useEffect(() => {
     if (
-      selectedQuestion !== null &&
+      selectedQuestionIndex !== null &&
       ['Waiting for question'].indexOf(currentStage) !== -1
     ) {
       setSelectedStage(votingStages.indexOf('Waiting to vote'))
     }
     if (
-      selectedQuestion === null &&
+      selectedQuestionIndex === null &&
       ['Votes revealed', 'Waiting to vote'].indexOf(currentStage) !== -1
     ) {
       setSelectedStage(votingStages.indexOf('Waiting for question'))
     }
-  }, [selectedQuestion])
+  }, [selectedQuestionIndex])
 
   const questionSelectorActive =
     ['Waiting for question', 'Waiting to vote'].indexOf(currentStage) !== -1
@@ -74,12 +74,11 @@ const PageAdmin = () => {
   const canSelectQuestion = currentStage === 'Waiting for question'
 
   const preventQuestionReset =
-    selectedQuestion === null ||
+    selectedQuestionIndex === null ||
     ['Waiting to vote', 'Votes revealed'].indexOf(currentStage) === -1
 
   const setQuestionIndex = index => {
     setActiveQuestion(index)
-    setSelectedQuestion(index)
   }
 
   return (
@@ -130,7 +129,7 @@ const PageAdmin = () => {
                         setQuestionIndex(index)
                       }}
                       canSelectQuestion={canSelectQuestion}
-                      selectedIndex={selectedQuestion}
+                      selectedIndex={selectedQuestionIndex}
                     />
                   </>
                 )}
@@ -150,7 +149,7 @@ const PageAdmin = () => {
             canRevealVotes={canRevealVotes}
             setQuestionIndex={setQuestionIndex}
             preventQuestionReset={preventQuestionReset}
-            selectedQuestion={selectedQuestion}
+            selectedQuestion={selectedQuestionIndex}
             selectedStage={selectedStage}
           />
         </>
