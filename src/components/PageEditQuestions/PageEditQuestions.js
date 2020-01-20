@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Box, Text, Heading, FormField, Button, TextInput } from 'grommet'
+import { Box, Text, FormField, Button, TextInput } from 'grommet'
 import { Add, Trash, Troubleshoot } from 'grommet-icons'
 import { LoadingIcon, QuestionAnswerForm } from '..'
 import { get, post } from 'axios'
@@ -110,7 +110,7 @@ class PageAdmin extends Component {
 
   render() {
     document.title = 'Voting App - Edit Questions'
-    const { questionList, loading, error, selectedQuestion } = this.state
+    const { questionList, loading, error } = this.state
 
     return (
       <>

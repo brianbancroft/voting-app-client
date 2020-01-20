@@ -59,8 +59,15 @@ class SocketContextProvider extends Component {
         selectedVotingStage: selectedStage,
         selectedQuestion: { question, answers },
         votes,
+        selectedQuestionIndex,
       }) => {
-        this.setState({ selectedStage, question, answers, votes })
+        this.setState({
+          selectedStage,
+          question,
+          answers,
+          votes,
+          selectedQuestionIndex,
+        })
       },
     )
   }
@@ -86,8 +93,9 @@ class SocketContextProvider extends Component {
     socket.emit('set-voting-stage', selectedStage)
   }
 
-  setActiveQuestion = questionIndex => {
-    socket.emit('set-active-question', { questionIndex })
+  setActiveQuestion = selectedQuestionIndex => {
+    socket.emit('set-active-question', { questionIndex: selectedQuestionIndex })
+    this.setState({ selectedQuestionIndex })
   }
 
   render() {
