@@ -12,8 +12,8 @@ class SocketContextProvider extends Component {
       question: '',
       answers: [],
       votes: {},
-      votingActive: false,
       adminPresent: false,
+      selectedStage: 0,
     }
   }
 
@@ -27,6 +27,10 @@ class SocketContextProvider extends Component {
       this.setState({ question, answers })
     })
 
+    socket.on('set-voting-stage', selectedStage => {
+      this.setState({ selectedStage })
+    })
+
     socket.on('error', e => {
       console.error('Error detected', e)
       this.setState({ error: true })
@@ -37,15 +41,6 @@ class SocketContextProvider extends Component {
       this.setState({ connected: false })
     })
 
-    socket.on('set-voting-active', () => {
-      console.log('Set voting active triggered')
-      this.setState({ votingActive: true })
-    })
-
-    socket.on('set-voting-disabled', () => {
-      this.setState({ votingActive: false })
-    })
-
     socket.on('admin-enter', () => {
       this.setState({ adminPresent: true })
     })
@@ -54,12 +49,25 @@ class SocketContextProvider extends Component {
     })
   }
 
+  votingStages = [
+    'Waiting for host',
+    'Waiting for question',
+    'Waiting to vote',
+    'Voting active',
+    'Voting ended',
+    'Votes revealed',
+  ]
+
   sendVote = index => {
     socket.emit('vote', index)
   }
 
   setAdminPresent = present => {
     socket.emit(present ? 'admin-enter' : 'admin-exit')
+  }
+
+  setSelectedStage = selectedStage => {
+    socket.emit('set-voting-stage', selectedStage)
   }
 
   setVotingActive = active => {
@@ -76,6 +84,8 @@ class SocketContextProvider extends Component {
       setAdminPresent,
       setVotingActive,
       setActiveQuestion,
+      setSelectedStage,
+      votingStages,
     } = this
 
     return (
@@ -86,6 +96,8 @@ class SocketContextProvider extends Component {
           setAdminPresent,
           setVotingActive,
           setActiveQuestion,
+          setSelectedStage,
+          votingStages,
         }}
       >
         {this.props.children}

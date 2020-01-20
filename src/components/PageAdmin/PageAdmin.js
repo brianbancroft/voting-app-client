@@ -14,15 +14,15 @@ const url = 'http://localhost:4000/poll'
 const PageAdmin = () => {
   const [loading, setLoading] = useState(true)
   const [questionList, setQuestionList] = useState([])
-  const votingStages = ['lobby', 'seeQuestion', 'voteOnQuestion', 'seeResults']
-  const [selectedStage, setSelectedStage] = useState(0)
   const [selectedQuestion, setSelectedQuestion] = useState(null)
 
   const {
     setActiveQuestion,
-    votingActive,
     setVotingActive,
     setAdminPresent,
+    setSelectedStage,
+    selectedStage,
+    votingStages,
   } = useContext(SocketContext)
 
   useEffect(() => {
@@ -41,6 +41,9 @@ const PageAdmin = () => {
       setAdminPresent(false)
     }
   }, [])
+
+  const votingActive = votingStages[selectedStage] === 'Voting active'
+  const canRevealVotes = votingStages[selectedStage] === 'Voting ended'
 
   const setQuestionIndex = index => {
     setActiveQuestion(index)
@@ -145,7 +148,12 @@ const PageAdmin = () => {
                   <Text>End Voting</Text>
                 </Box>
               </Button>
-              <Button>
+              <Button
+                onClick={() => {
+                  console.log('reveal votes selected')
+                }}
+                disabled={!canRevealVotes}
+              >
                 <Box pad="medium" background="accent-1">
                   <Text>Reveal Results</Text>
                 </Box>
