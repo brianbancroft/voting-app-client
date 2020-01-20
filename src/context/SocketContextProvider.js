@@ -19,8 +19,11 @@ class SocketContextProvider extends Component {
 
   componentDidMount() {
     socket.on('connect', () => {
-      console.log('Context socket connected')
       this.setState({ connected: true })
+    })
+
+    socket.on('update-votes', votes => {
+      this.setState({ votes })
     })
 
     socket.on('change-question', ({ question, answers }) => {
@@ -98,6 +101,10 @@ class SocketContextProvider extends Component {
     this.setState({ selectedQuestionIndex })
   }
 
+  resetVotes = () => {
+    this.setState({ votes: {} })
+  }
+
   render() {
     const {
       sendVote,
@@ -105,6 +112,7 @@ class SocketContextProvider extends Component {
       setActiveQuestion,
       setSelectedStage,
       votingStages,
+      resetVotes,
     } = this
 
     return (
@@ -116,6 +124,7 @@ class SocketContextProvider extends Component {
           setActiveQuestion,
           setSelectedStage,
           votingStages,
+          resetVotes,
         }}
       >
         {this.props.children}

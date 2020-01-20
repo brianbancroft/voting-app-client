@@ -31,7 +31,6 @@ const SectionAdminVotingControls = ({
         <Button
           disabled={selectedStage !== 2}
           onClick={() => {
-            console.log('set selected stage triggere')
             setSelectedStage(3)
           }}
         >

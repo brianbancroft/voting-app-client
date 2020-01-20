@@ -22,6 +22,7 @@ const PageAdmin = () => {
     setActiveQuestion,
     answers,
     votes,
+    resetVotes,
     setAdminPresent,
     setSelectedStage,
     selectedStage,
@@ -30,7 +31,6 @@ const PageAdmin = () => {
   } = useContext(SocketContext)
 
   const currentStage = votingStages[selectedStage]
-  console.log('Current stage', currentStage)
 
   useEffect(() => {
     const loadData = async () => {
@@ -60,6 +60,7 @@ const PageAdmin = () => {
       selectedQuestionIndex === null &&
       ['Votes revealed', 'Waiting to vote'].indexOf(currentStage) !== -1
     ) {
+      resetVotes()
       setSelectedStage(votingStages.indexOf('Waiting for question'))
     }
   }, [selectedQuestionIndex])
@@ -140,10 +141,7 @@ const PageAdmin = () => {
                     <Box>
                       <Heading level={3}>Results for Question</Heading>
                     </Box>
-                    <VoteTable
-                      answers={answers}
-                      votes={currentStage === 'Votes revealed' ? votes : {}}
-                    />
+                    <VoteTable answers={answers} votes={votes} />
                   </>
                 )}
               </Box>
