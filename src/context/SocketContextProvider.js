@@ -42,6 +42,11 @@ class SocketContextProvider extends Component {
     })
 
     socket.on('admin-enter', () => {
+      if (this.votingStages[this.state.selectedStage] === 'Waiting for host') {
+        this.setState({
+          selectedStage: this.votingStages.indexOf('Waiting for question'),
+        })
+      }
       this.setState({ adminPresent: true })
     })
     socket.on('admin-exit', () => {

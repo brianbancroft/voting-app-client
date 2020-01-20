@@ -1,6 +1,7 @@
 # Client for Voting Application
 
-TODOS
+## TODOS
+
 - [x] Centralize Connection to a Context Component
 - [ ] Prevent questions from being seen until selected
 - [ ] Overhaul effects for a given vote.
@@ -8,3 +9,8 @@ TODOS
 - [ ] Use oAuth to ensure one person, one vote.
 - [ ] Use Client id to ensure one person, one vote.
 - [ ] Restrict admin path to a given id.
+
+
+### Voter/Display
+
+- [ ] When connecting, obtain the current state of affairs as an initial handshake

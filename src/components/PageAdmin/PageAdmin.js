@@ -44,6 +44,8 @@ const PageAdmin = () => {
 
   const votingActive = votingStages[selectedStage] === 'Voting active'
   const canRevealVotes = votingStages[selectedStage] === 'Voting ended'
+  const canSelectQuestion =
+    votingStages[selectedStage] === 'Waiting for question'
 
   const setQuestionIndex = index => {
     setActiveQuestion(index)
@@ -70,14 +72,17 @@ const PageAdmin = () => {
                 margin={{ bottom: '2px' }}
               >
                 {votingStages.map((stage, index) => (
-                  <Box
-                    key={stage}
-                    pad="medium"
-                    background={index === selectedStage ? 'accent-5' : 'white'}
-                    border={{ size: 'small', color: 'dark-2' }}
-                  >
-                    {stage}
-                  </Box>
+                  <Button key={stage}>
+                    <Box
+                      pad="medium"
+                      background={
+                        index === selectedStage ? 'accent-5' : 'white'
+                      }
+                      border={{ size: 'small', color: 'dark-2' }}
+                    >
+                      {stage}
+                    </Box>
+                  </Button>
                 ))}
               </Box>
             </Box>
@@ -93,6 +98,7 @@ const PageAdmin = () => {
                 selectQuestion={index => {
                   setQuestionIndex(index)
                 }}
+                canSelectQuestion={canSelectQuestion}
                 selectedIndex={selectedQuestion}
               />
             </Box>

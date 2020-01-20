@@ -5,6 +5,7 @@ const SectionChooseQuestion = ({
   questions,
   selectQuestion,
   selectedIndex,
+  canSelectQuestion,
 }) => (
   <Box direction="row" justify="around" wrap>
     {questions.map(({ question, answers }, index) => (
@@ -13,7 +14,7 @@ const SectionChooseQuestion = ({
         onClick={() => {
           selectQuestion(index)
         }}
-        disabled={index === selectedIndex}
+        disabled={!canSelectQuestion || index === selectedIndex}
       >
         <Box
           direction="column"
