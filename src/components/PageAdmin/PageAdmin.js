@@ -4,6 +4,7 @@ import {
   LoadingDisplayAdminPage,
   ErrorDisplayAdminPage,
   SectionChooseQuestion,
+  SectionAdminVotingControls,
 } from '..'
 import { SocketContext } from '../../context'
 import { get } from 'axios'
@@ -12,18 +13,22 @@ import { useContext } from 'react'
 const url = 'http://localhost:4000/poll'
 
 const PageAdmin = () => {
+  document.title = 'Voting App - Admin Page'
   const [loading, setLoading] = useState(true)
   const [questionList, setQuestionList] = useState([])
   const [selectedQuestion, setSelectedQuestion] = useState(null)
 
   const {
     setActiveQuestion,
-    setVotingActive,
+
     setAdminPresent,
     setSelectedStage,
     selectedStage,
     votingStages,
   } = useContext(SocketContext)
+
+  const currentStage = votingStages[selectedStage]
+  console.log('Current stage', currentStage)
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,17 +47,40 @@ const PageAdmin = () => {
     }
   }, [])
 
-  const votingActive = votingStages[selectedStage] === 'Voting active'
-  const canRevealVotes = votingStages[selectedStage] === 'Voting ended'
-  const canSelectQuestion =
-    votingStages[selectedStage] === 'Waiting for question'
+  useEffect(() => {
+    if (
+      selectedQuestion !== null &&
+      ['Waiting for question'].indexOf(currentStage) !== -1
+    ) {
+      setSelectedStage(votingStages.indexOf('Waiting to vote'))
+    }
+    if (
+      selectedQuestion === null &&
+      ['Votes revealed', 'Waiting to vote'].indexOf(currentStage) !== -1
+    ) {
+      setSelectedStage(votingStages.indexOf('Waiting for question'))
+    }
+  }, [selectedQuestion])
+
+  const questionSelectorActive =
+    ['Waiting for question', 'Waiting to vote'].indexOf(currentStage) !== -1
+
+  const votingResultsActive =
+    ['Voting active', 'Voting ended', 'Votes revealed'].indexOf(
+      currentStage,
+    ) !== -1
+
+  const canRevealVotes = currentStage === 'Voting ended'
+  const canSelectQuestion = currentStage === 'Waiting for question'
+
+  const preventQuestionReset =
+    selectedQuestion === null ||
+    ['Waiting to vote', 'Votes revealed'].indexOf(currentStage) === -1
 
   const setQuestionIndex = index => {
     setActiveQuestion(index)
     setSelectedQuestion(index)
   }
-
-  document.title = 'Voting App - Admin Page'
 
   return (
     <>
@@ -90,82 +118,41 @@ const PageAdmin = () => {
               pad="small"
               border={{ side: 'bottom', size: 'small', color: 'dark-2' }}
             >
-              <Box>
-                <Heading level={3}>Select your question</Heading>
+              <Box height="medium">
+                {questionSelectorActive && (
+                  <>
+                    <Box>
+                      <Heading level={3}>Select your question</Heading>
+                    </Box>
+                    <SectionChooseQuestion
+                      questions={questionList}
+                      selectQuestion={index => {
+                        setQuestionIndex(index)
+                      }}
+                      canSelectQuestion={canSelectQuestion}
+                      selectedIndex={selectedQuestion}
+                    />
+                  </>
+                )}
+                {votingResultsActive && (
+                  <>
+                    <Box>
+                      <Heading level={3}>Results for Question</Heading>
+                    </Box>
+                    <Box>Stuff goes here...</Box>
+                  </>
+                )}
               </Box>
-              <SectionChooseQuestion
-                questions={questionList}
-                selectQuestion={index => {
-                  setQuestionIndex(index)
-                }}
-                canSelectQuestion={canSelectQuestion}
-                selectedIndex={selectedQuestion}
-              />
             </Box>
           </Box>
-          <Box pad="small">
-            <Box>
-              <Heading level={3}>Voting Controls</Heading>
-            </Box>
-            <Box direction="row" justify="around">
-              <Button
-                onClick={() => setQuestionIndex(null)}
-                disabled={selectedQuestion === null}
-              >
-                <Box pad="medium" background="accent-1">
-                  <Text>
-                    {selectedQuestion === null
-                      ? 'Question not set'
-                      : 'Reset Question'}
-                  </Text>
-                </Box>
-              </Button>
-              <Button
-                disabled={votingActive || selectedQuestion === null}
-                onClick={() => {
-                  setVotingActive(true)
-                  setSelectedStage(2)
-                }}
-              >
-                <Box pad="medium" background="accent-1">
-                  <Text>Reveal Question</Text>
-                </Box>
-              </Button>
-
-              <Button
-                disabled={votingActive || selectedQuestion === null}
-                onClick={() => {
-                  setVotingActive(true)
-                  setSelectedStage(2)
-                }}
-              >
-                <Box pad="medium" background="accent-1">
-                  <Text>Start Voting</Text>
-                </Box>
-              </Button>
-              <Button
-                disabled={!votingActive}
-                onClick={() => {
-                  setVotingActive(false)
-                  setSelectedStage(3)
-                }}
-              >
-                <Box pad="medium" background="accent-1">
-                  <Text>End Voting</Text>
-                </Box>
-              </Button>
-              <Button
-                onClick={() => {
-                  console.log('reveal votes selected')
-                }}
-                disabled={!canRevealVotes}
-              >
-                <Box pad="medium" background="accent-1">
-                  <Text>Reveal Results</Text>
-                </Box>
-              </Button>
-            </Box>
-          </Box>
+          <SectionAdminVotingControls
+            setSelectedStage={setSelectedStage}
+            canRevealVotes={canRevealVotes}
+            setQuestionIndex={setQuestionIndex}
+            preventQuestionReset={preventQuestionReset}
+            selectedQuestion={selectedQuestion}
+            selectedStage={selectedStage}
+          />
         </>
       )}
     </>

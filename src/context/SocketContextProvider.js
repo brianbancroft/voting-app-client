@@ -75,10 +75,6 @@ class SocketContextProvider extends Component {
     socket.emit('set-voting-stage', selectedStage)
   }
 
-  setVotingActive = active => {
-    socket.emit(active ? 'set-voting-active' : 'set-voting-disabled')
-  }
-
   setActiveQuestion = questionIndex => {
     socket.emit('set-active-question', { questionIndex })
   }
@@ -87,7 +83,6 @@ class SocketContextProvider extends Component {
     const {
       sendVote,
       setAdminPresent,
-      setVotingActive,
       setActiveQuestion,
       setSelectedStage,
       votingStages,
@@ -99,7 +94,6 @@ class SocketContextProvider extends Component {
           ...this.state,
           sendVote,
           setAdminPresent,
-          setVotingActive,
           setActiveQuestion,
           setSelectedStage,
           votingStages,
