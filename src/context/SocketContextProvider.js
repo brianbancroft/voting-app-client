@@ -55,8 +55,12 @@ class SocketContextProvider extends Component {
 
     socket.on(
       'initial-context',
-      ({ selectedVotingStage, selectedQuestion }) => {
-        console.log('Initial context object returned')
+      ({
+        selectedVotingStage: selectedStage,
+        selectedQuestion: { question, answers },
+        votes,
+      }) => {
+        this.setState({ selectedStage, question, answers, votes })
       },
     )
   }
