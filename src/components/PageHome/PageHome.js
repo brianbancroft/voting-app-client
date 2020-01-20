@@ -12,11 +12,15 @@ const PageHome = () => {
     votes,
     votingStages,
     selectedStage,
+    initialConnection,
   } = useContext(SocketContext)
   const [voted, setVoted] = useState(false)
   const [choice, setChoice] = useState(null)
 
   const currentStage = votingStages[selectedStage]
+
+  const waitingForQuestion =
+    ['Waiting for host', 'Waiting for question'].indexOf(currentStage) !== -1
 
   // Allows user to vote again if voted
   useEffect(() => {
@@ -29,6 +33,10 @@ const PageHome = () => {
     sendVote(index)
     setChoice(answers[index])
   }
+
+  let background = 'light-4'
+  if (!initialConnection || !connected) background = 'status-warning'
+  if (initialConnection && waitingForQuestion) background = 'status-ok'
 
   const AnswerButton = (answer, index) => {
     return (
@@ -47,49 +55,93 @@ const PageHome = () => {
   }
 
   return (
-    <Box border={{ size: 'small', color: 'highlight' }} pad="large">
-      <Heading size="h2">{question}</Heading>
+    <>
       <Box
-        justify="between"
-        border={{ size: 'small', color: 'dark-2' }}
-        direction="row"
-        width="large"
+        background={background}
+        height="xlarge"
+        pad="medium"
+        justify="center"
+        align="center"
       >
-        {answers.map(AnswerButton)}
-      </Box>
-      {!connected && (
-        <Box margin={{ top: '20px' }}>
-          <Text>
-            <AnimatedEllipsis>Connecting</AnimatedEllipsis>
-          </Text>
-        </Box>
-      )}
-      {connected && currentStage === 'Voting active' ? (
-        <Box margin={{ top: '20px' }}>
-          <Text>
-            <Text>Voting Active{choice && `. You selected "${choice}"`}</Text>
-          </Text>
-        </Box>
-      ) : (
-        <Box margin={{ top: '20px' }}>
-          <Text>
-            <Text>
-              Voting not Active{choice && `. You selected "${choice}"`}
-            </Text>
-          </Text>
-        </Box>
-      )}
-      {connected &&
-        ['Voting ended', 'Votes revealed'].indexOf(currentStage) !== -1 && (
+        {!initialConnection ? (
+          <Box
+            height="small"
+            width="small"
+            justify="around"
+            direction="column"
+            background="white"
+            round="medium"
+            pad="small"
+            elevation="medium"
+          >
+            <Box>
+              <Heading level={3} textAlign="center" margin={{ top: '5px' }}>
+                Waiting for Connection...
+              </Heading>
+            </Box>
+            <Box>
+              <Text textAlign="center">One moment...</Text>
+            </Box>
+          </Box>
+        ) : (
+          waitingForQuestion && (
+            <Box
+              height="small"
+              width="small"
+              justify="between"
+              direction="column"
+              background="white"
+              round="medium"
+              align="center"
+              pad="medium"
+              elevation="medium"
+            >
+              <Box>
+                <Heading level={3} textAlign="center" margin={{ top: '5px' }}>
+                  You are connected
+                </Heading>
+              </Box>
+              <Box justify="center" align="center">
+                <Text textAlign="center">Please wait for a question</Text>
+              </Box>
+            </Box>
+          )
+        )}
+
+        {connected && currentStage === 'Voting active' && (
           <>
-            <Heading level={3}>Results </Heading>
-            <VoteTable
-              answers={answers}
-              votes={currentStage === 'Votes revealed' ? votes : {}}
-            />
+            {' '}
+            <Heading size="h2">{question}</Heading>
+            <Box
+              justify="between"
+              border={{ size: 'small', color: 'dark-2' }}
+              direction="row"
+              width="large"
+              height="large"
+            >
+              {answers.map(AnswerButton)}
+            </Box>
+            <Box margin={{ top: '20px' }}>
+              <Text>
+                <Text>
+                  Voting Active{choice && `. You selected "${choice}"`}
+                </Text>
+              </Text>
+            </Box>
           </>
         )}
-    </Box>
+        {connected &&
+          ['Voting ended', 'Votes revealed'].indexOf(currentStage) !== -1 && (
+            <>
+              <Heading level={3}>Results </Heading>
+              <VoteTable
+                answers={answers}
+                votes={currentStage === 'Votes revealed' ? votes : {}}
+              />
+            </>
+          )}
+      </Box>
+    </>
   )
 }
 

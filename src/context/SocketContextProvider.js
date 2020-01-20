@@ -8,6 +8,7 @@ class SocketContextProvider extends Component {
     super()
     this.state = {
       connected: false,
+      initialConnection: false,
       error: false,
       question: '',
       answers: [],
@@ -70,6 +71,7 @@ class SocketContextProvider extends Component {
           answers,
           votes,
           selectedQuestionIndex,
+          initialConnection: true,
         })
       },
     )
