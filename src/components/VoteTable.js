@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Box, Button, DataTable, Heading, Text, Meter } from 'grommet'
 
-const VoteTable = (answers, votes) => {
-  return <></>
-
-  if (!answers || answers.length === 0) {
+const VoteTable = ({ answers, votes }) => {
+  if (!answers) {
     return <></>
   } else {
     const add = (total, num) => total + num
-    const totalVotes = Object.values(votes).reduce(add)
+    const votesList = Object.values(votes)
+    const totalVotes = votesList.length > 0 ? votesList.reduce(add) : 0
 
     const tableAnswers = answers.map((answer, index) => ({
       answer,

@@ -17,10 +17,6 @@ const PageHome = () => {
   const [choice, setChoice] = useState(null)
 
   const currentStage = votingStages[selectedStage]
-  console.log('selectedStage ', currentStage)
-  console.log('votes ', votes)
-  console.log('question ', question)
-  console.log('answers ', answers)
 
   // Allows user to vote again if voted
   useEffect(() => {
@@ -87,7 +83,10 @@ const PageHome = () => {
         ['Voting ended', 'Votes revealed'].indexOf(currentStage) !== -1 && (
           <>
             <Heading level={3}>Results </Heading>
-            <VoteTable answers={answers} votes={votes} />
+            <VoteTable
+              answers={answers}
+              votes={currentStage === 'Votes revealed' ? votes : {}}
+            />
           </>
         )}
     </Box>

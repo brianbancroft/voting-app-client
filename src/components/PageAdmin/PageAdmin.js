@@ -5,6 +5,7 @@ import {
   // ErrorDisplayAdminPage,
   SectionChooseQuestion,
   SectionAdminVotingControls,
+  VoteTable,
 } from '..'
 import { SocketContext } from '../../context'
 import { get } from 'axios'
@@ -19,7 +20,8 @@ const PageAdmin = () => {
 
   const {
     setActiveQuestion,
-
+    answers,
+    votes,
     setAdminPresent,
     setSelectedStage,
     selectedStage,
@@ -138,7 +140,10 @@ const PageAdmin = () => {
                     <Box>
                       <Heading level={3}>Results for Question</Heading>
                     </Box>
-                    <Box>Stuff goes here...</Box>
+                    <VoteTable
+                      answers={answers}
+                      votes={currentStage === 'Votes revealed' ? votes : {}}
+                    />
                   </>
                 )}
               </Box>
