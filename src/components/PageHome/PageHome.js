@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Box, Button, Heading, Text } from 'grommet'
-import { AnimatedEllipsis, VoteTable } from '..'
+import { AnimatedEllipsis, VoteTable, SectionVoting } from '..'
 import { SocketContext } from '../../context'
 
 const PageHome = () => {
@@ -21,6 +21,14 @@ const PageHome = () => {
 
   const waitingForQuestion =
     ['Waiting for host', 'Waiting for question'].indexOf(currentStage) !== -1
+
+  const questionRevealed =
+    ['Waiting to vote', 'Voting active'].indexOf(currentStage) !== -1
+
+  const viewResults =
+    ['Voting ended', 'Votes revealed'].indexOf(currentStage) !== -1
+
+  const canVote = connected && currentStage === 'Voting active' && !voted
 
   // Allows user to vote again if voted
   useEffect(() => {
@@ -108,28 +116,16 @@ const PageHome = () => {
           )
         )}
 
-        {connected && currentStage === 'Voting active' && (
-          <>
-            {' '}
-            <Heading size="h2">{question}</Heading>
-            <Box
-              justify="between"
-              border={{ size: 'small', color: 'dark-2' }}
-              direction="row"
-              width="large"
-              height="large"
-            >
-              {answers.map(AnswerButton)}
-            </Box>
-            <Box margin={{ top: '20px' }}>
-              <Text>
-                <Text>
-                  Voting Active{choice && `. You selected "${choice}"`}
-                </Text>
-              </Text>
-            </Box>
-          </>
+        {initialConnection && questionRevealed && (
+          <SectionVoting
+            canVote={canVote}
+            answers={answers}
+            selectResponse={selectResponse}
+            question={question}
+          />
         )}
+        {initialConnection && viewResults && <>Results View</>}
+
         {connected &&
           ['Voting ended', 'Votes revealed'].indexOf(currentStage) !== -1 && (
             <>

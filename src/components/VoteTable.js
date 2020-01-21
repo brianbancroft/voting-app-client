@@ -9,11 +9,15 @@ const VoteTable = ({ answers, votes }) => {
     const votesList = Object.values(votes)
     const totalVotes = votesList.length > 0 ? votesList.reduce(add) : 0
 
-    const tableAnswers = answers.map((answer, index) => ({
-      answer,
-      votes: votes[index] || 0,
-      pct: votes[index] ? (100 * votes[index]) / totalVotes : 0,
-    }))
+    const tableAnswers = answers.map((answer, index) => {
+      console.log(votes[index] ? (100 * votes[index]) / totalVotes : 0)
+      return {
+        answer,
+        votes: votes[index] || 0,
+        pct: votes[index] ? (1.25 * (100 * votes[index])) / totalVotes : 0,
+        color: `accent-${index + 1}`,
+      }
+    })
 
     return (
       <>
@@ -25,11 +29,16 @@ const VoteTable = ({ answers, votes }) => {
               property: 'pct',
               header: <Text>Vote Share</Text>,
               render: datum => (
-                <Box pad={{ vertical: 'xsmall' }}>
+                <Box
+                  // pad={{ vertical: 'xsmall' }}
+                  elevation="medium"
+                  border={{ color: 'dark-5', size: 'small' }}
+                >
                   <Meter
-                    values={[{ value: datum.pct }]}
+                    values={[{ value: datum.pct, color: datum.color }]}
                     thickness="small"
                     size="small"
+                    background="light-2"
                   />
                 </Box>
               ),
