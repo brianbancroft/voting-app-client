@@ -11,7 +11,7 @@ const SectionVoting = ({ question, answers, selectResponse, canVote }) => {
 
   const AnswerButton = (answer, index) => {
     return (
-      <Box margin="4px">
+      <Box margin="4px" justify="center">
         <Button
           onClick={() => {
             selectResponse(index)
@@ -29,6 +29,8 @@ const SectionVoting = ({ question, answers, selectResponse, canVote }) => {
             elevation="small"
             justify="center"
             align="center"
+            responsive
+            margin="0 auto"
           >
             <Text size="large" weight="bold" color="dark-2">
               {answer}
@@ -41,7 +43,15 @@ const SectionVoting = ({ question, answers, selectResponse, canVote }) => {
 
   return (
     <>
-      <Box direction="column" width="large" justify="start" align="start">
+      <Box
+        direction="column"
+        width="large"
+        justify="start"
+        align="start"
+        border={{ side: 'bottom', size: '2px', color: 'dark-2' }}
+        pad={{ bottom: '7px' }}
+        margin={{ bottom: '10px' }}
+      >
         <Heading level={4} margin="0">
           Question:
         </Heading>
@@ -49,10 +59,13 @@ const SectionVoting = ({ question, answers, selectResponse, canVote }) => {
       </Box>
       <Box
         justify="start"
-        align="start"
+        align="center"
         direction="row"
         width="large"
         height="large"
+        overflow="scroll"
+        responsive
+        pad={{ bottom: '120px' }}
         wrap
       >
         {answers.map(AnswerButton)}

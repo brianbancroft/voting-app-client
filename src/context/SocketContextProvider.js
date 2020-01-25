@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import io from 'socket.io-client'
 import SocketContext from './SocketContext'
 
-const socket = io('http://10.0.0.154:4000')
+const socket = io('http://localhost:4000')
 class SocketContextProvider extends Component {
   constructor() {
     super()

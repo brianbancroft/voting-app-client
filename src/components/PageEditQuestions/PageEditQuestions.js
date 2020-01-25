@@ -7,7 +7,7 @@ import { get, post } from 'axios'
 const maxNumberQuestions = 18
 const maxNumberAnswers = 4
 
-const url = 'http://localhost:4000/poll'
+const url = 'http://localhost:3000/poll'
 class PageAdmin extends Component {
   constructor() {
     super()
